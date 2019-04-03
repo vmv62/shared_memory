@@ -2,21 +2,41 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <stdio.h>
-#include <string.h>
+ 
+#define SHMSZ     27
+ 
+int main()
+{
+    int shmid;
+    key_t key;
+    char *shm, *s;
+ 
+ 
+    key = 5678;
+ 
+ 
+    if ((shmid = shmget(key, SHMSZ, 0666)) < 0) {
+        perror("shmget");
+        return(1);
+    }
+ 
+ 
+    if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+        perror("shmat");
+        return(1);
+    }
+ 
+	s = shm;
 
-int main(int argc, char **argv){
-	int shm;
-	char *shm_ptr;
-	key_t key = 135;
+/*
+    for (s = shm; *s != 0; s++)
+        putchar(*s);
+    putchar('\n');
+*/
 
-	if((shm = shmget(key, 0, 0)) < 0){
-		perror("shm_client");
-//		return(1);
-	}
-
-	shm_ptr = (char *)shmat(shm, NULL, 0);
-
-	printf("%s", shm_ptr);
-
-	return 0;
+	printf("%s", s);
+ 
+    *shm = '*';
+ 
+    return(0);
 }

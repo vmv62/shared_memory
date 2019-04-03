@@ -4,22 +4,40 @@
 #include <stdio.h>
 #include <string.h>
 
-int main(int argc, char **argv){
-	int shm;
-	char *shm_ptr;
-	key_t key = 135;
+#define SHMSZ     27
 
-	if((shm = shmget(key, 1000, IPC_CREAT | 0x0666)) < 0){
-		perror("shmget");
-//		shmdt(shm);
-//		return(0);
-	}
+int main()
+{
+    int c;
+    int shmid;
+    key_t key;
+    int *shm, *s;
+ 
+    key = 5678;
+ 
+ 
+    if ((shmid = shmget(key, SHMSZ, IPC_CREAT | 0666)) < 0) {
+        perror("shmget");
+        return(1);
+    }
+ 
+ 
+    if ((shm = shmat(shmid, NULL, 0)) == (int *) -1) {
+        perror("shmat");
+        return(1);
+    }
+ 
+    s = shm;
+/*
+    for (c = 48; c <= 80; c++)
+        *s++ = c;
+    *s = -1;
+*/
 
-	shm_ptr = (char *)shmat(shm, NULL, 0);
+	memcpy(s, "Hello\n", 6);
 
-	memcpy(shm_ptr, "Hello World!            \n", 13);
-
-	while(1);;
-
-	return 0;
+    while (*shm != '*')
+        sleep(1);
+ 
+    return(0);
 }
