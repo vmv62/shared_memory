@@ -3,83 +3,54 @@
 #include <sys/shm.h>
 #include <stdio.h>
 #include <string.h>
+#include "shm.h"
 
-#define SHMSZ     27
 
-int main()
+//set shared memory with key
+char *set_shmem(int id, int size)
 {
-    int c;
-    int shmid;
-    key_t key;
-    int *shm, *s;
- 
-    key = 5678;
- 
- 
-    if ((shmid = shmget(key, SHMSZ, IPC_CREAT | 0666)) < 0) {
-        perror("shmget");
-        return(1);
-    }
- 
- 
-    if ((shm = shmat(shmid, NULL, 0)) == (int *) -1) {
-        perror("shmat");
-        return(1);
-    }
- 
-    s = shm;
-/*
-    for (c = 48; c <= 80; c++)
-        *s++ = c;
-    *s = -1;
-*/
+	int shmid;
+	key_t key;
+	char *shm;
 
-	memcpy(s, "Hello\n", 6);
+	key = (key_t)id;
 
-    while (*shm != '*')
-        sleep(1);
- 
-    return(0);
+
+	if ((shmid = shmget(key, size, IPC_CREAT | 0666)) < 0) {
+		perror("shmget");
+		return(1);
+	}
+
+
+	if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+		perror("shmat");
+		return(1);
+	}
+
+
+   return shm;
 }
-#include <sys/types.h>
-#include <sys/ipc.h>
-#include <sys/shm.h>
-#include <stdio.h>
+
  
-#define SHMSZ     27
- 
-int main()
+char *get_shmem(int id)
 {
-    int shmid;
-    key_t key;
-    char *shm, *s;
- 
- 
-    key = 5678;
- 
- 
-    if ((shmid = shmget(key, SHMSZ, 0666)) < 0) {
-        perror("shmget");
-        return(1);
-    }
- 
- 
-    if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
-        perror("shmat");
-        return(1);
-    }
- 
-	s = shm;
+	int shmid;
+	key_t key;
+	char *shm, *s;
 
-/*
-    for (s = shm; *s != 0; s++)
-        putchar(*s);
-    putchar('\n');
-*/
+	key = (key_t)id;
 
-	printf("%s", s);
- 
-    *shm = '*';
- 
-    return(0);
+	if ((shmid = shmget(key, SHMSZ, 0666)) < 0) {
+		perror("shmget");
+		return(1);
+	}
+
+
+	if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+		perror("shmat");
+		return(1);
+	}
+
+
+    return	shm;
 }
