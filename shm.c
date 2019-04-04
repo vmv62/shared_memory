@@ -3,52 +3,55 @@
 #include <sys/shm.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "shm.h"
 
 
 //set shared memory with key
-char *set_shmem(int id, int size)
+int *set_shmem(int id, int size)
 {
 	int shmid;
 	key_t key;
-	char *shm;
+	int *shm;
 
 	key = (key_t)id;
 
+	printf("%d\n", size);
+	printf("%d\n", key);
 
 	if ((shmid = shmget(key, size, IPC_CREAT | 0666)) < 0) {
 		perror("shmget");
-		return(1);
+		exit(-1);
 	}
 
 
-	if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+	if ((shm = shmat(shmid, NULL, 0)) == (int *) -1) {
 		perror("shmat");
-		return(1);
+		exit(-1);
 	}
 
-
-   return shm;
+	printf("%d\n", shm);
+   return *shm;
 }
 
  
-char *get_shmem(int id)
+int *get_shmem(int id)
 {
 	int shmid;
 	key_t key;
-	char *shm, *s;
+	int *shm;
 
 	key = (key_t)id;
 
-	if ((shmid = shmget(key, SHMSZ, 0666)) < 0) {
+	if ((shmid = shmget(key, 100, 0666)) < 0) {
 		perror("shmget");
-		return(1);
+		exit(-1);
 	}
 
 
-	if ((shm = shmat(shmid, NULL, 0)) == (char *) -1) {
+	if ((shm = shmat(shmid, NULL, 0)) == (int *) -1) {
 		perror("shmat");
-		return(1);
+		exit(-1);
 	}
 
 
