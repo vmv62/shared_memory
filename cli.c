@@ -10,7 +10,7 @@ int main(){
 
 	try_t *data;
 
-	data = get_shmem(5678);
+	data = get_shmem(1234);
 
 	printf("%s", data->str1);
 	printf("%s", data->str2);

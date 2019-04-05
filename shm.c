@@ -31,10 +31,10 @@ int *set_shmem(int id, int size)
 	}
 
 	printf("%d\n", shm);
-   return *shm;
+   return shm;
 }
 
- 
+
 int *get_shmem(int id)
 {
 	int shmid;
