@@ -11,7 +11,7 @@ int main(){
 
 	try_t *data;
 
-	data = (try_t *)get_shmem(SHM_KEY);
+	data = (try_t *)get_shmem(SHM_KEY, SHMSZ);
 /*
 	printf("%s", data->str1);
 	printf("%s", data->str2);
