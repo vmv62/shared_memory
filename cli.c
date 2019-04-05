@@ -6,14 +6,17 @@ int main(){
 	typedef struct{
 		char str1[64];
 		char str2[64];
+		int numb;
 	}try_t;
 
 	try_t *data;
 
-	data = get_shmem(1234);
-
+	data = (try_t *)get_shmem(SHM_KEY);
+/*
 	printf("%s", data->str1);
 	printf("%s", data->str2);
+*/
+	printf("%d\n", data->numb);
 
 	return 0;
 }

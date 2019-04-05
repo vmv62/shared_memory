@@ -8,20 +8,20 @@
 
 
 //set shared memory with key
-int *set_shmem(int id, int size)
-{
+int *set_shmem(int id, int size){
 	int shmid;
 	key_t key;
 	int *shm;
 
 	key = (key_t)id;
 
-	printf("%d\n", size);
-	printf("%d\n", key);
 
-	if ((shmid = shmget(key, size, IPC_CREAT | 0666)) < 0) {
-		perror("shmget");
-		exit(-1);
+	//Проверяем есть ли уже созданая область в памяти, если нет, то создаем.
+	if((shmid = shmget(key, size, 0666)) == -1){
+		if ((shmid = shmget(key, size, IPC_CREAT | 0666)) < 0) {
+			perror("shmget");
+			exit(-1);
+		}
 	}
 
 
@@ -30,12 +30,11 @@ int *set_shmem(int id, int size)
 		exit(-1);
 	}
 
-	printf("%d\n", shm);
    return shm;
 }
 
 
-int *get_shmem(int id)
+int *get_shmem(int id, int size)
 {
 	int shmid;
 	key_t key;
